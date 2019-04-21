@@ -75,6 +75,14 @@ class VL53L0X(object):
         # restore static sequence config
         self.write_byte(register.VL53L0X_REG_SYSTEM_SEQUENCE_CONFIG, self.static_seq_config)
 
+    def perform_single_ref_calibration(self, init_byte):
+        """TODO"""
+        self.write_byte(register.VL53L0X_REG_SYSRANGE_START, register.VL53L0X_REG_SYSRANGE_MODE_START_STOP | init_byte)
+        
+        self.measurement_poll_for_completion()
+        
+        self.write_byte(register.VL53L0X_REG_SYSRANGE_START, 0x00)
+
     def perform_ref_spad_management(self):
         """TODO"""
         return

@@ -19,13 +19,7 @@ class VL53L0X(object):
         # static sequence config
         self.static_seq_config = 0
 
-        # retry max loop
-        self.max_loop = 0
-
-        # retry polling delay in seconds
-        self.polling_delay = 0.1
-
-        # measurement data cache
+        # measurement data, in millimeter
         self.measurement = 0
 
     def setup(self):
@@ -101,31 +95,7 @@ class VL53L0X(object):
     def perform_single_ref_calibration(self, byte):
         self.write_byte(VL53L0X_REG_SYSRANGE_START, VL53L0X_REG_SYSRANGE_MODE_START_STOP | byte)
 
-        self.measurement_poll_for_completion()
-
         self.write_byte(VL53L0X_REG_SYSRANGE_START, 0x00)
-
-    def measurement_poll_for_completion(self):
-        loop_nb = 0
-        while loop_nb <= self.max_loop:
-            data = self.get_measurement_data_ready()
-            if data == 1:
-                # TODO - measurement ready log
-                break
-
-            loop_nb += 1
-
-            # polling delay
-            time.sleep(self.polling_delay)
-
-        # TODO - timeout error log
-
-    def get_measurement_data_ready(self):
-        status_reg = self.read_byte(VL53L0X_REG_RESULT_RANGE_STATUS)
-        if status_reg & 0x01:
-            return 1
-
-        return 0
 
     def ref_calibration_io(self, byte):
         # read vhv from device
@@ -173,8 +143,6 @@ class VL53L0X(object):
     def perform_single_measurement(self):
         self.start_measurement()
 
-        self.measurement_poll_for_completion()
-
     def start_measurement(self):
         self.write_byte(0x80, 0x01)
         self.write_byte(0xFF, 0x01)
@@ -189,27 +157,7 @@ class VL53L0X(object):
         # device mode single ranging
         self.write_byte(VL53L0X_REG_SYSRANGE_START, 0x01)
 
-        # wait until start bit has been cleared
-        start_stop_byte = VL53L0X_REG_SYSRANGE_MODE_START_STOP
-        tmp_byte = start_stop_byte
-        loop_nb = 0
-
-        while ((tmp_byte & start_stop_byte) == start_stop_byte) and (loop_nb < self.max_loop):
-            if loop_nb > 0:
-                tmp_byte = self.read_byte(VL53L0X_REG_SYSRANGE_START)
-
-            loop_nb += 1
-
-        # TODO - timeout error log
-
     def get_ranging_measurement_data(self):
-        sysrange_status = self.read_byte(VL53L0X_REG_RESULT_RANGE_STATUS)
-        if sysrange_status & 0x01:
-            # TODO - measurement data ready log
-            print("measurement data ready")
-        else:
-            return 0
-
         raw_data = self.read_block(0x14)
 
         # TODO - log these out

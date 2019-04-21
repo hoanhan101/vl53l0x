@@ -1,5 +1,5 @@
 #
-# registers.py contains VL53L0X registers addresses mapping
+# registers.py contains registers addresses mapping
 #
 
 """device registers"""

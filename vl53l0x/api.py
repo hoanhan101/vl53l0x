@@ -141,14 +141,27 @@ class VL53L0X(object):
         self.write_byte(0xFF, 0x00)
         self.write_byte(register.VL53L0X_REG_GLOBAL_CONFIG_REF_EN_START_SELECT, 0xB4)
         self.write_byte(register.VL53L0X_REG_POWER_MANAGEMENT_GO1_POWER_FORCE, 0)
-        
+
         self.perform_ref_calibration()
-        
+
         self.perform_ref_signal_measurement()
 
     def perform_ref_signal_measurement(self):
         """TODO"""
-        return
+        self.write_byte(register.VL53L0X_REG_SYSTEM_SEQUENCE_CONFIG, 0xC0)
+
+        measurement = self.perform_single_ranging_measurement()
+
+        self.write_byte(0xFF, 0x01)
+
+        self.read_word(register.VL53L0X_REG_RESULT_PEAK_SIGNAL_RATE_REF)
+
+        self.write_byte(0xFF, 0x00)
+
+        # restore static sequence config
+        self.write_byte(register.VL53L0X_REG_SYSTEM_SEQUENCE_CONFIG, self.static_seq_config)
+
+        return measurement
 
     def write_byte(self, reg, data):
         """TODO"""

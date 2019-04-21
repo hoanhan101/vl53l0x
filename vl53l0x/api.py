@@ -28,27 +28,35 @@ class VL53L0X(object):
         """TODO"""
 
         # set i2c standard mode
-        write_byte(bus, 0x88, 0x00)
+        self.write_byte(0x88, 0x00)
 
         # read whoami
-        read_byte(bus, 0xC0)
+        self.read_byte(0xC0)
 
         # use internal default settings
-        write_byte(bus, 0x80, 0x01)
-        write_byte(bus, 0xFF, 0x01)
-        write_byte(bus, 0x00, 0x00)
+        self.write_byte(0x80, 0x01)
+        self.write_byte(0xFF, 0x01)
+        self.write_byte(0x00, 0x00)
 
-        read_byte(bus, 0x91)
+        self.read_byte(0x91)
 
-        write_byte(bus, 0x00, 0x01)
-        write_byte(bus, 0xFF, 0x00)
-        write_byte(bus, 0x80, 0x00)
+        self.write_byte(0x00, 0x01)
+        self.write_byte(0xFF, 0x00)
+        self.write_byte(0x80, 0x00)
 
-        write_byte(bus, register.VL53L0X_REG_SYSTEM_SEQUENCE_CONFIG, 0xFF)
+        self.write_byte(register.VL53L0X_REG_SYSTEM_SEQUENCE_CONFIG, 0xFF)
 
     def static_init(self):
         """TODO"""
-        return
+
+        self.write_byte(0xFF, 0x01)
+
+        self.read_byte(0x84)
+
+        self.write_byte(0xFF, 0x00)
+
+        # read the sequence config and save it
+        self.static_seq_config = self.read_byte(register.VL53L0X_REG_SYSTEM_SEQUENCE_CONFIG)
 
     def perform_ref_calibration(self):
         """TODO"""

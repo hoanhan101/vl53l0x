@@ -75,9 +75,9 @@ class VL53L0X(object):
         # restore static sequence config
         self.write_byte(register.VL53L0X_REG_SYSTEM_SEQUENCE_CONFIG, self.static_seq_config)
 
-    def perform_single_ref_calibration(self, init_byte):
+    def perform_single_ref_calibration(self, byte):
         """TODO"""
-        self.write_byte(register.VL53L0X_REG_SYSRANGE_START, register.VL53L0X_REG_SYSRANGE_MODE_START_STOP | init_byte)
+        self.write_byte(register.VL53L0X_REG_SYSRANGE_START, register.VL53L0X_REG_SYSRANGE_MODE_START_STOP | byte)
 
         self.measurement_poll_for_completion()
 
@@ -106,6 +106,19 @@ class VL53L0X(object):
             return 1
 
         return 0
+
+    def ref_calibration_io(self, byte):
+        """TODO"""
+        # read vhv from device
+        self.write_byte(0xFF, 0x01)
+        self.write_byte(0x00, 0x00)
+        self.write_byte(0xFF, 0x00)
+
+        self.read_byte(byte)
+
+        self.write_byte(0xFF, 0x01)
+        self.write_byte(0x00, 0x00)
+        self.write_byte(0xFF, 0x00)
 
     def perform_ref_spad_management(self):
         """TODO"""

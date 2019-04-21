@@ -135,7 +135,16 @@ class VL53L0X(object):
 
     def perform_ref_spad_management(self):
         """TODO"""
-        return
+        self.write_byte(0xFF, 0x01)
+        self.write_byte(register.VL53L0X_REG_DYNAMIC_SPAD_REF_EN_START_OFFSET, 0x00)
+        self.write_byte(register.VL53L0X_REG_DYNAMIC_SPAD_NUM_REQUESTED_REF_SPAD, 0x2C)
+        self.write_byte(0xFF, 0x00)
+        self.write_byte(register.VL53L0X_REG_GLOBAL_CONFIG_REF_EN_START_SELECT, 0xB4)
+        self.write_byte(register.VL53L0X_REG_POWER_MANAGEMENT_GO1_POWER_FORCE, 0)
+        
+        self.perform_ref_calibration()
+        
+        self.perform_ref_signal_measurement()
 
     def perform_ref_signal_measurement(self):
         """TODO"""

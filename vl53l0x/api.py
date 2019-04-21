@@ -75,6 +75,19 @@ class VL53L0X(object):
         # restore static sequence config
         self.write_byte(register.VL53L0X_REG_SYSTEM_SEQUENCE_CONFIG, self.static_seq_config)
 
+    def perform_phase_calibration(self):
+        """TODO"""
+        # run phase cal
+        self.write_byte(register.VL53L0X_REG_SYSTEM_SEQUENCE_CONFIG, 0x02)
+
+        self.perform_single_ref_calibration(0x0)
+
+        # read phase cal from device
+        self.ref_calibration_io(bus, 0xEE)
+
+        # restore static sequence config
+        self.write_byte(register.VL53L0X_REG_SYSTEM_SEQUENCE_CONFIG, self.static_seq_config)
+
     def perform_single_ref_calibration(self, byte):
         """TODO"""
         self.write_byte(register.VL53L0X_REG_SYSRANGE_START, register.VL53L0X_REG_SYSRANGE_MODE_START_STOP | byte)

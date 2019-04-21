@@ -98,7 +98,15 @@ class VL53L0X(object):
             time.sleep(self.polling_delay)
 
         # TODO - timeout error log
-            
+
+    def get_measurement_data_ready(self):
+        """TODO"""
+        status_reg = self.read_byte(register.VL53L0X_REG_RESULT_RANGE_STATUS)
+        if status_reg & 0x01:
+            return 1
+
+        return 0
+
     def perform_ref_spad_management(self):
         """TODO"""
         return

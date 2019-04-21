@@ -5,8 +5,8 @@
 import smbus
 import time
 
-from register import *
-from utils import *
+from .register import *
+from .utils import *
 
 class VL53L0X(object):
     def __init__(self):

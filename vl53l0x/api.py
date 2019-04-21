@@ -128,8 +128,6 @@ class VL53L0X(object):
 
         self.write_byte(0xFF, 0x01)
 
-        self.read_word(VL53L0X_REG_RESULT_PEAK_SIGNAL_RATE_REF)
-
         self.write_byte(0xFF, 0x00)
 
         # restore static sequence config
@@ -180,11 +178,5 @@ class VL53L0X(object):
 
     def read_block(self, reg):
         read = self.bus.read_i2c_block_data(self.address, reg)
-
-        return read
-
-    def read_word(self, reg):
-        raw = self.bus.read_i2c_block_data(self.address, reg)[:2]
-        read = (raw[0] << 8) + raw[1]
 
         return read

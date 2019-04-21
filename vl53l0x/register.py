@@ -1,5 +1,5 @@
 #
-# registers.py contains registers addresses mapping
+# register.py contains a set of registers addresses mapping
 #
 
 """device registers"""

@@ -163,6 +163,12 @@ class VL53L0X(object):
 
         return measurement
 
+    def perform_single_ranging_measurement(self):
+        """TODO"""
+        self.perform_single_measurement()
+
+        return self.get_ranging_measurement_data()
+
     def write_byte(self, reg, data):
         """TODO"""
         self.bus.write_byte_data(self.address, reg, data)

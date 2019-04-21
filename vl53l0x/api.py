@@ -78,11 +78,27 @@ class VL53L0X(object):
     def perform_single_ref_calibration(self, init_byte):
         """TODO"""
         self.write_byte(register.VL53L0X_REG_SYSRANGE_START, register.VL53L0X_REG_SYSRANGE_MODE_START_STOP | init_byte)
-        
+
         self.measurement_poll_for_completion()
-        
+
         self.write_byte(register.VL53L0X_REG_SYSRANGE_START, 0x00)
 
+    def measurement_poll_for_completion(self):
+        """TODO"""
+        loop_nb = 0
+        while loop_nb <= self.max_loop:
+            data = self.get_measurement_data_ready()
+            if data == 1:
+                # TODO - measurement ready log
+                break
+
+            loop_nb += 1
+
+            # polling delay
+            time.sleep(self.polling_delay)
+
+        # TODO - timeout error log
+            
     def perform_ref_spad_management(self):
         """TODO"""
         return

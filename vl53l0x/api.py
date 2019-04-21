@@ -188,6 +188,25 @@ class VL53L0X(object):
 
         # TODO - timeout error log
 
+    def get_ranging_measurement_data(self):
+        sysrange_status = self.read_byte(register.VL53L0X_REG_RESULT_RANGE_STATUS)
+        if sysrange_status & 0x01:
+            # TODO - measurement data ready log
+            print("measurement data ready")
+        else:
+            return 0
+
+        raw_data = self.read_block(0x14)
+
+        # TODO - log these out
+        range_millimeter = make_uint16(raw_data[11], raw_data[10])
+        signal_rate = make_uint16(raw_data[7], raw_data[6])
+        ambient_rate = make_uint16(raw_data[9], raw_data[8])
+        effective_spad_rtn_count = make_uint16(raw_data[3], raw_data[2])
+        device_range_status = raw_data[0]
+
+        return range_millimeter
+
     def write_byte(self, reg, data):
         self.bus.write_byte_data(self.address, reg, data)
 

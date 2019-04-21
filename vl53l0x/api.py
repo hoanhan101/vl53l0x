@@ -62,6 +62,19 @@ class VL53L0X(object):
         # restore static sequence config
         self.write_byte(register.VL53L0X_REG_SYSTEM_SEQUENCE_CONFIG, self.static_seq_config)
 
+    def perform_vhv_calibration(self):
+        """TODO"""
+        # run vhv
+        self.write_byte(register.VL53L0X_REG_SYSTEM_SEQUENCE_CONFIG, 0x01)
+
+        self.perform_single_ref_calibration(0x40)
+
+        # read vhv from device
+        self.ref_calibration_io(0xCB)
+
+        # restore static sequence config
+        self.write_byte(register.VL53L0X_REG_SYSTEM_SEQUENCE_CONFIG, self.static_seq_config)
+
     def perform_ref_spad_management(self):
         """TODO"""
         return

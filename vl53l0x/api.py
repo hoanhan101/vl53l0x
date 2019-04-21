@@ -175,6 +175,34 @@ class VL53L0X(object):
 
         self.measurement_poll_for_completion()
 
+    def start_measurement(self):
+        """TODO"""
+        self.write_byte(0x80, 0x01)
+        self.write_byte(0xFF, 0x01)
+        self.write_byte(0x00, 0x00)
+
+        self.read_byte(0x91)
+
+        self.write_byte(0x00, 0x01)
+        self.write_byte(0xFF, 0x00)
+        self.write_byte(0x80, 0x00)
+
+        # device mode single ranging
+        self.write_byte(register.VL53L0X_REG_SYSRANGE_START, 0x01)
+
+        # wait until start bit has been cleared
+        start_stop_byte = register.VL53L0X_REG_SYSRANGE_MODE_START_STOP
+        tmp_byte = start_stop_byte
+        loop_nb = 0
+
+        while ((tmp_byte & start_stop_byte) == start_stop_byte) and (loop_nb < max_loop):
+            if loop_nb > 0:
+                tmp_byte = self.read_byte(register.VL53L0X_REG_SYSRANGE_START)
+
+            loop_nb += 1
+
+        # TODO - timeout error log
+
     def write_byte(self, reg, data):
         """TODO"""
         self.bus.write_byte_data(self.address, reg, data)

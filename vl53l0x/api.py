@@ -26,7 +26,6 @@ class VL53L0X(object):
 
     def data_init(self):
         """TODO"""
-
         # set i2c standard mode
         self.write_byte(0x88, 0x00)
 
@@ -48,11 +47,8 @@ class VL53L0X(object):
 
     def static_init(self):
         """TODO"""
-
         self.write_byte(0xFF, 0x01)
-
         self.read_byte(0x84)
-
         self.write_byte(0xFF, 0x00)
 
         # read the sequence config and save it
@@ -60,6 +56,11 @@ class VL53L0X(object):
 
     def perform_ref_calibration(self):
         """TODO"""
+        self.perform_vhv_calibration()
+        self.perform_phase_calibration()
+
+        # restore static sequence config
+        self.write_byte(register.VL53L0X_REG_SYSTEM_SEQUENCE_CONFIG, self.static_seq_config)
 
     def perform_ref_spad_management(self):
         """TODO"""
